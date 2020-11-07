@@ -17,6 +17,9 @@ svg.addEventListener('click', function(e) {
   // Focus path element
   const state = input.parentElement.querySelector('.state');
 
+  // Set electoral votes data
+  setStateData(state);
+
   // Set SVG map states party data
   setPartyData(state);
 
@@ -25,8 +28,7 @@ svg.addEventListener('click', function(e) {
     if (!detached.classList.contains(state.id)) return
     setPartyData(detached);
 
-    // Set CD1, CD2 and CD3 for NE and ME states
-    // Force it to SVG path data
+    // Set detached party data
     if (detached.classList.contains('NE')) {
       document.querySelector('.detached-group-neb').querySelectorAll('.CD').forEach(val => {
         val.setAttribute('data-party', state.getAttribute('data-party'));
@@ -44,6 +46,7 @@ svg.addEventListener('click', function(e) {
   calcVote();
 })
 
+// Handle detached states click event
 detachedStates.forEach(state => {
   state.addEventListener('click', function (e) {
     const detached = e.target;
@@ -51,44 +54,14 @@ detachedStates.forEach(state => {
     // Set detached states party data
     setPartyData(detached);
 
+    // Set detached electoral votes on element
+    setStateData(detached);
+
     // Set SVG map states party data
     svg.querySelectorAll('path').forEach(state => {
       if (!detached.classList.contains(state.id)) return
       setPartyData(state);
     });
-    
-    // Deal with NE and ME states
-    // if (detached.id =='NE1' || detached.id == 'NE-CD1' || detached.id =='NE-CD2' || detached.id == 'NE-CD3') {
-    //   svg.querySelectorAll('path').forEach(state => {
-    //     if (state.id !== 'NE') return;
-
-    //     switch (detached.id) {
-    //       case 'NE1':
-    //         if (detached.getAttribute('data-party') == 'rep' && detached.getAttribute('data-type') == 'win') {
-    //           state.style.fill = 'url(#pattern-NE-CD1)';
-    //         }
-    //         break;
-    //       case 'NE-CD1':
-    //         if (detached.getAttribute('data-party') == 'rep' && detached.getAttribute('data-type') == 'win') {
-    //           state.style.fill = 'url(#pattern-NE-CD2)';
-    //         }
-    //         break;
-    //       case 'NE-CD2':
-    //         if (detached.getAttribute('data-party') == 'rep' && detached.getAttribute('data-type') == 'win') {
-    //           state.style.fill = 'url(#pattern-NE-CD3)';
-    //         }
-    //         break;
-    //       case 'NE-CD3':
-    //         if (detached.getAttribute('data-party') == 'rep' && detached.getAttribute('data-type') == 'win') {
-    //           state.style.fill = 'rgb(255, 74, 67)';
-    //         }
-    //         break;
-    //       default:
-    //         state.style.fill = '#ffc61c';
-    //         break;
-    //     }
-    //   });
-    // }
 
      // Re-tally vote
      calcVote();
@@ -126,10 +99,67 @@ function calcVote() {
   };
 
   svg.querySelectorAll('path').forEach(state => {
-    if (state.getAttribute('data-party') == 'rep') {
-      state.getAttribute('data-type') == 'win' ? party.rep += stateLookup(state.id) : party.repLean += stateLookup(state.id);
-    } else if (state.getAttribute('data-party') === 'dem')  {
-      state.getAttribute('data-type') == 'win' ? party.dem += stateLookup(state.id) : party.demLean += stateLookup(state.id);
+    // Handle NE and ME
+    if (state.id == 'NE' || state.id == 'ME') {
+      // Get detached state electoral data
+      let electoralSum = 0;
+      if (state.id == 'NE') {
+        document.querySelector('.detached-group-neb').querySelectorAll('.detached-states-item').forEach(val => {
+          if (val.id == 'NE1') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-ne') : party.repLean += +val.getAttribute('data-ne');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-ne') : party.demLean += +val.getAttribute('data-ne');
+            }
+          } else if (val.id == 'NE-CD1') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd1') : party.repLean += +val.getAttribute('data-cd1');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd1') : party.demLean += +val.getAttribute('data-cd1');
+            }
+          } else if (val.id == 'NE-CD2') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd2'): party.repLean += +val.getAttribute('data-cd2');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd2') : party.demLean += +val.getAttribute('data-cd2');
+            }
+          } else if (val.id == 'NE-CD3') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd3'): party.repLean += +val.getAttribute('data-cd3');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd3') : party.demLean += +val.getAttribute('data-cd3');
+            }
+          }
+        });
+      } else {
+        document.querySelector('.detached-group-maine').querySelectorAll('.detached-states-item').forEach(val => {
+          if (val.id == 'ME1') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-me') : party.repLean += +val.getAttribute('data-me');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-me') : party.demLean += +val.getAttribute('data-me');
+            }
+          } else if (val.id == 'ME-CD1') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd1') : party.repLean += +val.getAttribute('data-cd1');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd1') : party.demLean += +val.getAttribute('data-cd1');
+            }
+          } else if (val.id == 'ME-CD2') {
+            if (val.getAttribute('data-party') == 'rep') {
+              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd2') : party.repLean += +val.getAttribute('data-cd2');
+            } else if (val.getAttribute('data-party') === 'dem')  {
+              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd2') : party.demLean += +val.getAttribute('data-cd2');
+            }
+          }
+        });
+      }
+    } else {
+      if (state.getAttribute('data-party') == 'rep') {
+        state.getAttribute('data-type') == 'win' ? party.rep += stateLookup(state.id) : party.repLean += stateLookup(state.id);
+      } else if (state.getAttribute('data-party') === 'dem')  {
+        state.getAttribute('data-type') == 'win' ? party.dem += stateLookup(state.id) : party.demLean += stateLookup(state.id);
+      }
     }
   });
 
@@ -219,6 +249,51 @@ function stateLookup(state) {
   };
   let result = lookup[state];
   return result;
+}
+
+// Set state data
+function setStateData(detached) {
+  //SVG element 
+  if (detached.tagName == 'path') {
+    if (detached.id == 'NE') {
+      document.querySelector('.detached-group-neb').querySelectorAll('.detached-states-item').forEach(state => {
+        if (state.id == 'NE1') {
+          state.setAttribute('data-ne', 2);
+        } else if (state.id == 'NE-CD1') {
+          state.setAttribute('data-cd1', 1);
+        } else if (state.id == 'NE-CD2') {
+          state.setAttribute('data-cd2', 1);
+        } else if (state.id == 'NE-CD3') {
+          state.setAttribute('data-cd3', 1);
+        }
+      });
+    } else {
+      document.querySelector('.detached-group-maine').querySelectorAll('.detached-states-item').forEach(state => {
+        if (state.id == 'ME1') {
+          state.setAttribute('data-me', 2);
+        } else if (state.id == 'ME-CD1') {
+          state.setAttribute('data-cd1', 1);
+        } else if (state.id == 'ME-CD2') {
+          state.setAttribute('data-cd2', 1);
+        } else if (state.id == 'ME-CD3') {
+          state.setAttribute('data-cd3', 1);
+        }
+      });
+    }
+  } else {
+    // Detached elements
+    if (detached.id == 'ME1') {
+      detached.setAttribute('data-me', 2);
+    } else if (detached.id == 'NE1') {
+      detached.setAttribute('data-ne', 2);
+    } else if (detached.id == 'ME-CD1' || detached.id == 'NE-CD1') {
+      detached.setAttribute('data-cd1', 1);
+    } else if (detached.id == 'ME-CD2' || detached.id == 'NE-CD2') {
+      detached.setAttribute('data-cd2', 1);
+    } else if (detached.id == 'ME-CD3' || detached.id == 'NE-CD3') {
+      detached.setAttribute('data-cd3', 1);
+    }
+  }
 }
 
 

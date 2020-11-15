@@ -94,89 +94,89 @@ function setPartyData(state) {
 // Calculate state vote count
 function calcVote() {
 
-  // Use reduce()
-  const party = {
+  // Reduce method of looping through states and adding it to the party object
+  const partyData = Array.from(svg.querySelectorAll('path')).reduce((obj, state) => {
+      // Handle NE and ME
+      if (state.id == 'NE' || state.id == 'ME') {
+        // Get detached state electoral data
+        // let electoralSum = 0;
+        if (state.id == 'NE') {
+          document.querySelector('.detached-group-neb').querySelectorAll('.detached-states-item').forEach(val => {
+            if (val.id == 'NE1') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-ne') : obj.repLean += +val.getAttribute('data-ne');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-ne') : obj.demLean += +val.getAttribute('data-ne');
+              }
+            } else if (val.id == 'NE-CD1') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-cd1') : obj.repLean += +val.getAttribute('data-cd1');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-cd1') : obj.demLean += +val.getAttribute('data-cd1');
+              }
+            } else if (val.id == 'NE-CD2') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-cd2'): obj.repLean += +val.getAttribute('data-cd2');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-cd2') : obj.demLean += +val.getAttribute('data-cd2');
+              }
+            } else if (val.id == 'NE-CD3') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-cd3'): obj.repLean += +val.getAttribute('data-cd3');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-cd3') : obj.demLean += +val.getAttribute('data-cd3');
+              }
+            }
+          });
+        } else {
+          document.querySelector('.detached-group-maine').querySelectorAll('.detached-states-item').forEach(val => {
+            if (val.id == 'ME1') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-me') : obj.repLean += +val.getAttribute('data-me');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-me') : obj.demLean += +val.getAttribute('data-me');
+              }
+            } else if (val.id == 'ME-CD1') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-cd1') : obj.repLean += +val.getAttribute('data-cd1');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-cd1') : obj.demLean += +val.getAttribute('data-cd1');
+              }
+            } else if (val.id == 'ME-CD2') {
+              if (val.getAttribute('data-party') == 'rep') {
+                val.getAttribute('data-type') == 'win' ? obj.rep += +val.getAttribute('data-cd2') : obj.repLean += +val.getAttribute('data-cd2');
+              } else if (val.getAttribute('data-party') === 'dem')  {
+                val.getAttribute('data-type') == 'win' ? obj.dem += +val.getAttribute('data-cd2') : obj.demLean += +val.getAttribute('data-cd2');
+              }
+            }
+          });
+        }
+      } else {
+        if (state.getAttribute('data-party') == 'rep') {
+          state.getAttribute('data-type') == 'win' ? obj.rep += stateLookup(state.id) : obj.repLean += stateLookup(state.id);
+        } else if (state.getAttribute('data-party') === 'dem')  {
+          state.getAttribute('data-type') == 'win' ? obj.dem += stateLookup(state.id) : obj.demLean += stateLookup(state.id);
+        }
+      }
+
+      return obj;
+  }, {
     dem: 0,
     demLean: 0,
     rep: 0,
     repLean: 0
-  };
-
-  svg.querySelectorAll('path').forEach(state => {
-    // Handle NE and ME
-    if (state.id == 'NE' || state.id == 'ME') {
-      // Get detached state electoral data
-      let electoralSum = 0;
-      if (state.id == 'NE') {
-        document.querySelector('.detached-group-neb').querySelectorAll('.detached-states-item').forEach(val => {
-          if (val.id == 'NE1') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-ne') : party.repLean += +val.getAttribute('data-ne');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-ne') : party.demLean += +val.getAttribute('data-ne');
-            }
-          } else if (val.id == 'NE-CD1') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd1') : party.repLean += +val.getAttribute('data-cd1');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd1') : party.demLean += +val.getAttribute('data-cd1');
-            }
-          } else if (val.id == 'NE-CD2') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd2'): party.repLean += +val.getAttribute('data-cd2');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd2') : party.demLean += +val.getAttribute('data-cd2');
-            }
-          } else if (val.id == 'NE-CD3') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd3'): party.repLean += +val.getAttribute('data-cd3');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd3') : party.demLean += +val.getAttribute('data-cd3');
-            }
-          }
-        });
-      } else {
-        document.querySelector('.detached-group-maine').querySelectorAll('.detached-states-item').forEach(val => {
-          if (val.id == 'ME1') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-me') : party.repLean += +val.getAttribute('data-me');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-me') : party.demLean += +val.getAttribute('data-me');
-            }
-          } else if (val.id == 'ME-CD1') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd1') : party.repLean += +val.getAttribute('data-cd1');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd1') : party.demLean += +val.getAttribute('data-cd1');
-            }
-          } else if (val.id == 'ME-CD2') {
-            if (val.getAttribute('data-party') == 'rep') {
-              val.getAttribute('data-type') == 'win' ? party.rep += +val.getAttribute('data-cd2') : party.repLean += +val.getAttribute('data-cd2');
-            } else if (val.getAttribute('data-party') === 'dem')  {
-              val.getAttribute('data-type') == 'win' ? party.dem += +val.getAttribute('data-cd2') : party.demLean += +val.getAttribute('data-cd2');
-            }
-          }
-        });
-      }
-    } else {
-      if (state.getAttribute('data-party') == 'rep') {
-        state.getAttribute('data-type') == 'win' ? party.rep += stateLookup(state.id) : party.repLean += stateLookup(state.id);
-      } else if (state.getAttribute('data-party') === 'dem')  {
-        state.getAttribute('data-type') == 'win' ? party.dem += stateLookup(state.id) : party.demLean += stateLookup(state.id);
-      }
-    }
   });
 
   // Update candidate values
-  electoralDemElement.innerHTML = party.dem + party.demLean;
-  electoralRemElement.innerHTML = party.rep + party.repLean;
+  electoralDemElement.innerHTML = partyData.dem + partyData.demLean;
+  electoralRemElement.innerHTML = partyData.rep + partyData.repLean;
 
   // Update balance of power
-  electoralTotal(party);
+  electoralTotal(partyData);
 
   // Check 270 for win condition
-  presidentElectElement1.style.display = (party.dem >= 270) ? 'block' : 'none';
-  presidentElectElement2.style.display = (party.rep >= 270) ? 'block' : 'none';
+  presidentElectElement1.style.display = (partyData.dem >= 270) ? 'block' : 'none';
+  presidentElectElement2.style.display = (partyData.rep >= 270) ? 'block' : 'none';
 }
 
 // Cal total electoral

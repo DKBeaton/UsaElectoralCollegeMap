@@ -1,5 +1,3 @@
-// Use this. in functions for my obj
-
 // Variables
 const svg = document.querySelector('.svg');
 const detachedStates = document.querySelectorAll('.detached-states-item.state');

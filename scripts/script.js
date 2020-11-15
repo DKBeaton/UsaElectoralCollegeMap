@@ -99,7 +99,6 @@ function calcVote() {
       // Handle NE and ME
       if (state.id == 'NE' || state.id == 'ME') {
         // Get detached state electoral data
-        // let electoralSum = 0;
         if (state.id == 'NE') {
           document.querySelector('.detached-group-neb').querySelectorAll('.detached-states-item').forEach(val => {
             if (val.id == 'NE1') {
@@ -174,12 +173,12 @@ function calcVote() {
   // Update balance of power
   electoralTotal(partyData);
 
-  // Check 270 for win condition
+  // Check 270 for win condition and update winner
   presidentElectElement1.style.display = (partyData.dem >= 270) ? 'block' : 'none';
   presidentElectElement2.style.display = (partyData.rep >= 270) ? 'block' : 'none';
 }
 
-// Cal total electoral
+// Calculate and set total electoral
 function electoralTotal(party) {
   let dem = party.dem / 538 * 100;
   let rep = party.rep / 538 * 100;

@@ -1,3 +1,5 @@
+// Use this. in functions for my obj
+
 // Variables
 const svg = document.querySelector('.svg');
 const detachedStates = document.querySelectorAll('.detached-states-item.state');
@@ -11,10 +13,10 @@ const presidentElectElement2 = document.querySelector('.president-elect-2');
 svg.addEventListener('click', function(e) {
   const input = e.target;
 
-  // Make sure we are not clicking on the map
+  // Make sure we are clicking on a state element in the SVG and not blank space
   if (input.classList.contains('svg')) return
 
-  // Focus path element
+  // Focus state path element
   const state = input.parentElement.querySelector('.state');
 
   // Set electoral votes data
@@ -91,6 +93,8 @@ function setPartyData(state) {
 
 // Calculate state vote count
 function calcVote() {
+
+  // Use reduce()
   const party = {
     dem: 0,
     demLean: 0,
